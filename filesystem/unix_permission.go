@@ -59,7 +59,7 @@ func GetFileStatPermission(filePath string) (uint32, error) {
 		return 0, fmt.Errorf("Cannot get file's stat %s: %v", filePath, err)
 	}
 
-	return stat.Mode, nil
+	return uint32(stat.Mode), nil
 }
 
 func IsInclude(included uint32, include uint32) bool {
