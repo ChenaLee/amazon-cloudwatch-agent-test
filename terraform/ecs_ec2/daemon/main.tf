@@ -4,6 +4,12 @@ module "common" {
   cwagent_image_tag  = var.cwagent_image_tag
 }
 
+module "basic_components" {
+  source = "../../basic_components"
+
+  region = var.region
+}
+
 resource "aws_ecs_cluster" "cluster" {
   name = "cwagent-integ-test-cluster-${module.common.testing_id}"
 }
@@ -26,16 +32,21 @@ resource "aws_launch_configuration" "cluster" {
   image_id      = data.aws_ami.latest.image_id
   instance_type = var.ec2_instance_type
 
-  security_groups      = [data.aws_security_group.ecs_security_group.id]
-  iam_instance_profile = data.aws_iam_instance_profile.cwagent_instance_profile.name
+  security_groups      = [module.basic_components.security_group]
+  iam_instance_profile = module.basic_components.instance_profile
 
   user_data = "#!/bin/bash\necho ECS_CLUSTER=${aws_ecs_cluster.cluster.name} >> /etc/ecs/ecs.config"
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
+  }
 }
 
 resource "aws_autoscaling_group" "cluster" {
   name                 = aws_ecs_cluster.cluster.name
   launch_configuration = aws_launch_configuration.cluster.name
-  vpc_zone_identifier  = toset(data.aws_subnets.default.ids)
+  vpc_zone_identifier  = module.basic_components.public_subnet_ids
 
   min_size         = 1
   max_size         = 1
@@ -93,7 +104,7 @@ resource "aws_cloudwatch_log_group" "log_group" {
 
 locals {
   cwagent_config                = fileexists("../../../${var.test_dir}/resources/config.json") ? "../../../${var.test_dir}/resources/config.json" : "./default_resources/default_amazon_cloudwatch_agent.json"
-  cwagent_ecs_taskdef           = fileexists("../../../${var.test_dir}/resources/ecs_taskdef.tpl") ? "../../../${var.test_dir}/resources/ecs_taskdef.tpl" : "./default_resources/default_ecs_taskdef.tpl"
+  cwagent_ecs_taskdef           = fileexists("../../../${var.test_dir}/ecs_resources/ec2_launch/daemon/ecs_taskdef.tpl") ? "../../../${var.test_dir}/ecs_resources/ec2_launch/daemon/ecs_taskdef.tpl" : "./default_resources/default_ecs_taskdef.tpl"
   prometheus_config             = fileexists("../../../${var.test_dir}/resources/ecs_prometheus.tpl") ? "../../../${var.test_dir}/resources/ecs_prometheus.tpl" : "./default_resources/default_ecs_prometheus.tpl"
   extra_apps_ecs_taskdef        = fileexists("../../../${var.test_dir}/resources/extra_apps.tpl") ? "../../../${var.test_dir}/resources/extra_apps.tpl" : "./default_resources/default_extra_apps.tpl"
   cwagent_config_ssm_param_name = "cwagent-integ-test-ssm-config-${module.common.testing_id}"
@@ -142,13 +153,13 @@ data "template_file" "cwagent_container_definitions" {
 resource "aws_ecs_task_definition" "cwagent_task_definition" {
   family                   = "cwagent-task-family-${module.common.testing_id}"
   network_mode             = "bridge"
-  task_role_arn            = data.aws_iam_role.ecs_task_role.arn
-  execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = module.basic_components.role_arn
+  execution_role_arn       = module.basic_components.role_arn
   cpu                      = 256
   memory                   = 2048
   requires_compatibilities = ["EC2"]
   container_definitions    = data.template_file.cwagent_container_definitions.rendered
-  depends_on               = [aws_cloudwatch_log_group.log_group, data.aws_iam_role.ecs_task_role, data.aws_iam_role.ecs_task_execution_role]
+  depends_on               = [aws_cloudwatch_log_group.log_group]
   volume {
     name      = "proc"
     host_path = "/proc"
@@ -192,13 +203,13 @@ data "template_file" "extra_apps" {
 resource "aws_ecs_task_definition" "extra_apps_task_definition" {
   family                   = "extra-apps-family-${module.common.testing_id}"
   network_mode             = "awsvpc"
-  task_role_arn            = data.aws_iam_role.ecs_task_role.arn
-  execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = module.basic_components.role_arn
+  execution_role_arn       = module.basic_components.role_arn
   cpu                      = 256
   memory                   = 1024
   requires_compatibilities = ["FARGATE"]
   container_definitions    = data.template_file.extra_apps.rendered
-  depends_on               = [aws_cloudwatch_log_group.log_group, data.aws_iam_role.ecs_task_role, data.aws_iam_role.ecs_task_execution_role]
+  depends_on               = [aws_cloudwatch_log_group.log_group]
 }
 
 resource "aws_ecs_service" "extra_apps_service" {
@@ -209,8 +220,8 @@ resource "aws_ecs_service" "extra_apps_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    security_groups  = [data.aws_security_group.ecs_security_group.id]
-    subnets          = toset(data.aws_subnets.default.ids)
+    security_groups  = [module.basic_components.security_group]
+    subnets          = module.basic_components.public_subnet_ids
     assign_public_ip = true
   }
 

@@ -4,20 +4,14 @@
 package awsservice
 
 import (
-	"context"
 	"fmt"
+	"log"
 	"testing"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatch"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatch/types"
-)
-
-var (
-	metricsCtx context.Context
-	cwm        *cloudwatch.Client
 )
 
 const (
@@ -34,18 +28,13 @@ type metric struct {
 
 // ValidateMetrics takes the metric name, metric dimension and corresponding namespace that contains the metric
 func ValidateMetrics(t *testing.T, metricName, namespace string, dimensionsFilter []types.DimensionFilter) {
-	cwmClient, clientContext, err := GetCloudWatchMetricsClient()
-	if err != nil {
-		t.Fatalf("Error occurred while creating CloudWatch Logs SDK client: %v", err.Error())
-	}
-
 	listMetricsInput := cloudwatch.ListMetricsInput{
 		MetricName:     aws.String(metricName),
 		Namespace:      aws.String(namespace),
 		RecentlyActive: "PT3H",
 		Dimensions:     dimensionsFilter,
 	}
-	data, err := cwmClient.ListMetrics(*clientContext, &listMetricsInput)
+	data, err := CwmClient.ListMetrics(ctx, &listMetricsInput)
 	if err != nil {
 		t.Errorf("Error getting metric data %v", err)
 	}
@@ -66,13 +55,9 @@ func ValidateMetrics(t *testing.T, metricName, namespace string, dimensionsFilte
 
 }
 
-func ValidateSampleCount(t *testing.T, metricName, namespace string, dimensions []types.Dimension,
+func ValidateSampleCount(metricName, namespace string, dimensions []types.Dimension,
 	startTime time.Time, endTime time.Time,
 	lowerBoundInclusive int, upperBoundInclusive int, periodInSeconds int32) bool {
-	cwmClient, clientContext, err := GetCloudWatchMetricsClient()
-	if err != nil {
-		t.Fatalf("Error occurred while creating CloudWatch Logs SDK client: %v", err.Error())
-	}
 
 	metricStatsInput := cloudwatch.GetMetricStatisticsInput{
 		MetricName: aws.String(metricName),
@@ -83,9 +68,8 @@ func ValidateSampleCount(t *testing.T, metricName, namespace string, dimensions 
 		Dimensions: dimensions,
 		Statistics: []types.Statistic{types.StatisticSampleCount},
 	}
-	data, err := cwmClient.GetMetricStatistics(*clientContext, &metricStatsInput)
+	data, err := CwmClient.GetMetricStatistics(ctx, &metricStatsInput)
 	if err != nil {
-		t.Errorf("Error getting metric data %v", err)
 		return false
 	}
 
@@ -95,29 +79,31 @@ func ValidateSampleCount(t *testing.T, metricName, namespace string, dimensions 
 		dataPoints = dataPoints + int(*datapoint.SampleCount)
 	}
 
-	t.Logf("Number of datapoints for start time %v with endtime %v and period %d "+
-		"is %d expected is inclusive between %d and %d",
-		startTime, endTime, periodInSeconds, dataPoints, lowerBoundInclusive, upperBoundInclusive)
+	log.Printf("Number of datapoints for start time %v with endtime %v and period %d is %d is inclusive between %d and %d", startTime, endTime, periodInSeconds, dataPoints, lowerBoundInclusive, upperBoundInclusive)
 
-	if !(lowerBoundInclusive <= dataPoints) || !(upperBoundInclusive >= dataPoints) {
-		return false
+	if lowerBoundInclusive <= dataPoints && dataPoints <= upperBoundInclusive {
+		return true
 	}
 
-	return true
+	return false
 }
 
-// getCloudWatchMetricsClient returns a singleton SDK client for interfacing with CloudWatch Metrics
-func GetCloudWatchMetricsClient() (*cloudwatch.Client, *context.Context, error) {
-	if cwm == nil {
-		metricsCtx = context.Background()
-		c, err := config.LoadDefaultConfig(metricsCtx)
-		if err != nil {
-			return nil, nil, err
-		}
+// GetMetricData takes the metric name, metric dimension and metric namespace and return the query metrics
 
-		cwm = cloudwatch.NewFromConfig(c)
+func GetMetricData(metricDataQueries []types.MetricDataQuery, startTime, endTime time.Time) (*cloudwatch.GetMetricDataOutput, error) {
+
+	getMetricDataInput := cloudwatch.GetMetricDataInput{
+		StartTime:         &startTime,
+		EndTime:           &endTime,
+		MetricDataQueries: metricDataQueries,
 	}
-	return cwm, &metricsCtx, nil
+
+	data, err := CwmClient.GetMetricData(ctx, &getMetricDataInput)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
 
 func BuildDimensionFilterList(appendDimension int) []types.DimensionFilter {

@@ -87,17 +87,12 @@ variable "github_test_repo_branch" {
   default = "main"
 }
 
-variable "cwa_github_sha_date" {
-  type    = string
-  default = ""
-}
-
 variable "is_canary" {
-  type = bool
+  type    = bool
   default = false
 }
 
 variable "plugin_tests" {
-  type = string
+  type    = string
   default = ""
 }

@@ -28,18 +28,7 @@ variable "user" {
   default = ""
 }
 
-variable "install_agent" {
-  description = "go run ./install/install_agent.go deb or go run ./install/install_agent.go rpm"
-  type        = string
-  default     = "go run ./install/install_agent.go rpm"
-}
-
 variable "arc" {
-  type    = string
-  default = ""
-}
-
-variable "binary_name" {
   type    = string
   default = ""
 }
@@ -49,14 +38,9 @@ variable "s3_bucket" {
   default = ""
 }
 
-variable "test_name" {
-  type    = string
-  default = ""
-}
-
 variable "test_dir" {
   type    = string
-  default = ""
+  default = "../../test/stress/statsd"
 }
 
 variable "cwa_github_sha" {
@@ -78,7 +62,7 @@ variable "cwa_github_sha_date" {
   type    = string
   default = ""
 }
-variable "performance_number_of_logs" {
-  type    = string
-  default = ""
+variable "values_per_minute" {
+  type    = number
+  default = 10
 }
