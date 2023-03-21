@@ -21,10 +21,6 @@ import (
 
 // OwnerRoot confition => call CheckFileOwnerRights
 // OwnerReadPermission => get Mode() => wrapper function like OwnerRead..
-//
-
-// CheckFileRights check that the given file path has been protected by the owner.
-// If the owner is changed, they need at least the sudo permission to override the owner.
 
 type FilePermission string
 
@@ -90,6 +86,8 @@ func GetFileGroupName(filePath string) (string, error) {
 	}
 }
 
+// CheckFileRights check that the given file path has been protected by the owner.
+// If the owner is changed, they need at least the sudo permission to override the owner.
 func CheckFileRights(filePath string) error {
 	var stat syscall.Stat_t
 	if err := syscall.Stat(filePath, &stat); err != nil {
