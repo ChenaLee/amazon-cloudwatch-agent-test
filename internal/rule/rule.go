@@ -11,9 +11,10 @@ type Rule[T any] struct {
 
 func (r *Rule[T]) Evaluate(target T) (bool, error) {
 	for _, c := range r.Conditions {
+		log.Printf("Evaluating condition: %v", c.Name())
 		success, err := c.Evaluate(target)
 		if err != nil {
-			log.Printf("Error was %v", err)
+			log.Printf("Evaluation did not run. Error was %v", err)
 			return false, err
 		}
 		log.Printf("Evaluate result: %v", success)
@@ -25,12 +26,17 @@ func (r *Rule[T]) Evaluate(target T) (bool, error) {
 }
 
 type ICondition[T any] interface {
+	Name() string
 	Evaluate(T) (bool, error)
 }
 
 type FilePermissionExpected struct {
 	PermissionCompared filesystem.FilePermission
 	ShouldExist        bool
+}
+
+func (e *FilePermissionExpected) Name() string {
+	return "FilePermissionExpected"
 }
 
 func (e *FilePermissionExpected) Evaluate(target string) (bool, error) {
@@ -51,6 +57,10 @@ var _ ICondition[string] = (*FilePermissionExpected)(nil)
 type PermittedEntityMatch struct {
 	ExpectedOwner *string
 	ExpectedGroup *string
+}
+
+func (e *PermittedEntityMatch) Name() string {
+	return "PermittedEntityMatch"
 }
 
 func (e *PermittedEntityMatch) Evaluate(target string) (bool, error) {
