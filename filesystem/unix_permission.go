@@ -41,12 +41,12 @@ var FilePermissionInHex = map[FilePermission]uint32{
 }
 
 func FileHasPermission(filePath string, permission FilePermission) (bool, error) {
-	fileStat, ok := GetFileStatPermission(filePath)
-	if ok != nil {
-		return false, ok
+	fileStat, err := GetFileStatPermission(filePath)
+	if err != nil {
+		return false, err
 	}
-
-	return IsInclude(fileStat, FilePermissionInHex[permission]), nil
+	hasPermission := fileStat&FilePermissionInHex[permission] != 0
+	return hasPermission, nil
 }
 
 func GetFileStatPermission(filePath string) (uint32, error) {
@@ -56,10 +56,6 @@ func GetFileStatPermission(filePath string) (uint32, error) {
 	}
 
 	return uint32(stat.Mode), nil
-}
-
-func IsInclude(included uint32, include uint32) bool {
-	return included&include != 0
 }
 
 func GetFileOwnerUserName(filePath string) (string, error) {
@@ -79,7 +75,7 @@ func GetFileGroupName(filePath string) (string, error) {
 	if err := syscall.Stat(filePath, &stat); err != nil {
 		return "", fmt.Errorf("cannot get file's stat %s: %v", filePath, err)
 	}
-	if grp, err := user.LookupGroupId(fmt.Sprintf("%d", stat.Gid)); err != nil {
+	if grp, err := user.LookupGroupId(fmt.Sprint(stat.Gid)); err != nil {
 		return "", fmt.Errorf("cannot look up file group name %s: %v", filePath, err)
 	} else {
 		return grp.Name, nil

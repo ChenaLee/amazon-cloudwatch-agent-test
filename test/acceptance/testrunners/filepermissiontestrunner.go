@@ -1,3 +1,5 @@
+//go:build !windows
+
 package testrunners
 
 import (
@@ -16,9 +18,11 @@ type FilePermissionTestRunner struct {
 
 var _ test_runner.ITestRunner = (*FilePermissionTestRunner)(nil)
 
-const agentConfigPath = "/opt/aws/amazon-cloudwatch-agent/bin/config.json"
-const agentConfigCopiedDir = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d"
-const translatedTomlPath = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.toml"
+const (
+	agentConfigPath      = "/opt/aws/amazon-cloudwatch-agent/bin/config.json"
+	agentConfigCopiedDir = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d"
+	translatedTomlPath   = "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.toml"
+)
 
 var (
 	onlyRootCanWriteRule = rule.Rule[string]{
@@ -47,7 +51,10 @@ var testGroupResult *status.TestGroupResult = nil
 
 func (m *FilePermissionTestRunner) Validate() status.TestGroupResult {
 	if testGroupResult == nil {
-		return m.createTestGroupFailure()
+		return status.TestGroupResult{
+			Name:        m.GetTestName(),
+			TestResults: []status.TestResult{{Name: "", Status: status.FAILED}},
+		}
 	} else {
 		return *testGroupResult
 	}
@@ -100,15 +107,4 @@ func (m *FilePermissionTestRunner) validatePermissions(fileTestedPath string, ru
 
 	testResult.Status = status.SUCCESSFUL
 	return testResult
-}
-
-func (m *FilePermissionTestRunner) createTestGroupFailure() status.TestGroupResult {
-	testResult := status.TestResult{
-		Name:   "",
-		Status: status.FAILED,
-	}
-	return status.TestGroupResult{
-		Name:        m.GetTestName(),
-		TestResults: []status.TestResult{testResult},
-	}
 }
