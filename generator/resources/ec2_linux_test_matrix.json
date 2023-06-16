@@ -22,6 +22,28 @@
     "family": "linux"
   },
   {
+    "os": "ubuntu-20.04",
+    "username": "ubuntu",
+    "instanceType":"t2.nano",
+    "installAgentCommand": "go run ./install/install_agent.go deb",
+    "ami": "cloudwatch-agent-integration-test-ubuntu*",
+    "caCertPath": "/etc/ssl/certs/ca-certificates.crt",
+    "arc": "amd64",
+    "binaryName": "amazon-cloudwatch-agent.deb",
+    "family": "linux"
+  },
+  {
+    "os": "ubuntu-20.04",
+    "username": "ubuntu",
+    "instanceType":"t2.micro",
+    "installAgentCommand": "go run ./install/install_agent.go deb",
+    "ami": "cloudwatch-agent-integration-test-ubuntu*",
+    "caCertPath": "/etc/ssl/certs/ca-certificates.crt",
+    "arc": "amd64",
+    "binaryName": "amazon-cloudwatch-agent.deb",
+    "family": "linux"
+  },
+  {
     "os": "debian-10",
     "username": "admin",
     "instanceType": "c6g.large",

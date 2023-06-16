@@ -34,5 +34,17 @@
     "instanceType":"t3a.medium",
     "ami": "cloudwatch-agent-integration-test-win-2022*",
     "useSSM": true
+  },
+  {
+    "os": "win-2022",
+    "instanceType":"t2.nano",
+    "ami": "cloudwatch-agent-integration-test-win-2022*",
+    "useSSM": true
+  },
+  {
+    "os": "win-2022",
+    "instanceType":"t2.micro",
+    "ami": "cloudwatch-agent-integration-test-win-2022*",
+    "useSSM": true
   }
 ]
