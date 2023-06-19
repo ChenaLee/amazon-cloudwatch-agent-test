@@ -46,6 +46,9 @@ var testTypeToTestConfig = map[string][]testConfig{
 	"ec2_gpu": {
 		{testDir: "./test/nvidia_gpu"},
 	},
+	"ec2_linux_sanity_only": {
+		{testDir: "./test/sanity"},
+	},
 	"ec2_linux": {
 		{testDir: "./test/ca_bundle"},
 		{testDir: "./test/cloudwatchlogs"},
