@@ -120,6 +120,40 @@ resource "null_resource" "integration_test_fips_check" {
   ]
 }
 
+## reboot when only needed
+resource "null_resource" "integration_test_reboot" {
+  count = contains(local.reboot_required_tests, var.test_dir) ? 1 : 0
+
+  connection {
+    type        = "ssh"
+    user        = var.user
+    private_key = local.private_key_content
+    host        = aws_instance.cwagent.public_ip
+  }
+
+  # Prepare Integration Test
+  provisioner "remote-exec" {
+    inline = [
+      "echo reboot instance",
+      "sudo shutdown -r now &",
+    ]
+  }
+
+  depends_on = [
+    null_resource.integration_test_setup,
+  ]
+}
+
+resource "null_resource" "integration_test_wait" {
+  count = contains(local.reboot_required_tests, var.test_dir) ? 1 : 0
+  provisioner "local-exec" {
+    command = "echo Sleeping for 3m after initiating instance restart && sleep 180"
+  }
+  depends_on = [
+    null_resource.integration_test_reboot,
+  ]
+}
+
 resource "null_resource" "integration_test_setup" {
   connection {
     type        = "ssh"
