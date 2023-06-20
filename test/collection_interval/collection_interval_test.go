@@ -39,6 +39,7 @@ var envMetaDataStrings = &(environment.MetaDataStrings{})
 
 func init() {
 	environment.RegisterEnvironmentMetaDataFlags(envMetaDataStrings)
+	log.Printf("registered md strings are %v", envMetaDataStrings)
 }
 
 // Sets the collection interval and makes sure we get the numbers of expected metrics
@@ -47,6 +48,7 @@ func init() {
 // Add a shorter force flush interval than collection interval to make sure sample count are closer to correct
 func TestCollectionInterval(t *testing.T) {
 	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
+	log.Printf("got md %v", env)
 
 	parameters := []input{
 		{
