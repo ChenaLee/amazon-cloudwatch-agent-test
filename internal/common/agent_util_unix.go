@@ -120,13 +120,13 @@ func InstallAgent(installerFilePath string) error {
 	return err
 }
 
-func StartAgent(configOutputPath string, fatalOnFailure bool, ssm bool) error {
+func StartAgentWithCommand(configOutputPath string, fatalOnFailure bool, ssm bool, agentStartCommand string) error {
 	path := "file:"
 	if ssm {
 		path = "ssm:"
 	}
 	out, err := exec.
-		Command("bash", "-c", "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c "+path+configOutputPath).
+		Command("bash", "-c", agentStartCommand+path+configOutputPath).
 		Output()
 
 	if err != nil && fatalOnFailure {
@@ -138,6 +138,11 @@ func StartAgent(configOutputPath string, fatalOnFailure bool, ssm bool) error {
 	}
 
 	return err
+}
+
+func StartAgent(configOutputPath string, fatalOnFailure bool, ssm bool) error {
+	defaultEc2LinuxStartAgentCommand := "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c "
+	return StartAgentWithCommand(configOutputPath, fatalOnFailure, ssm, defaultEc2LinuxStartAgentCommand)
 }
 
 func StopAgent() {

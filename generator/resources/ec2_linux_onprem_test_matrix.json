@@ -4,6 +4,7 @@
     "username": "ec2-user",
     "instanceType":"t3a.medium",
     "installAgentCommand": "go run ./install/install_agent.go rpm",
+    "agentStartCommand": "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m onPremise -s -c ",
     "ami": "cloudwatch-agent-integration-test-al2*",
     "caCertPath": "/etc/ssl/certs/ca-bundle.crt",
     "arc": "amd64",

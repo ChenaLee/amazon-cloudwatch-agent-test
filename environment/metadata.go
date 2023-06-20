@@ -34,6 +34,7 @@ type MetaData struct {
 	ProxyUrl                  string
 	AssumeRoleArn             string
 	InstanceId                string
+	AgentStartCommand         string
 }
 
 type MetaDataStrings struct {
@@ -53,6 +54,7 @@ type MetaDataStrings struct {
 	ProxyUrl                  string
 	AssumeRoleArn             string
 	InstanceId                string
+	AgentStartCommand         string
 }
 
 func registerComputeType(dataString *MetaDataStrings) {
@@ -106,6 +108,12 @@ func registerAssumeRoleArn(dataString *MetaDataStrings) {
 
 func registerInstanceId(dataString *MetaDataStrings) {
 	flag.StringVar(&(dataString.InstanceId), "instanceId", "", "ec2 instance ID that is being used by a test")
+}
+
+func registerAgentStartCommand(dataString *MetaDataStrings) {
+	flag.StringVar(&(dataString.AgentStartCommand), "agentStartCommand",
+		"sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c ",
+		"Start command is different ec2 vs onprem, linux vs windows. Default set above is for EC2 with Linux")
 }
 
 func fillECSData(e *MetaData, data *MetaDataStrings) {
@@ -179,6 +187,7 @@ func RegisterEnvironmentMetaDataFlags(metaDataStrings *MetaDataStrings) *MetaDat
 	registerProxyUrl(metaDataStrings)
 	registerAssumeRoleArn(metaDataStrings)
 	registerInstanceId(metaDataStrings)
+	registerAgentStartCommand(metaDataStrings)
 	return metaDataStrings
 }
 
@@ -195,5 +204,7 @@ func GetEnvironmentMetaData(data *MetaDataStrings) *MetaData {
 	metaData.ProxyUrl = data.ProxyUrl
 	metaData.AssumeRoleArn = data.AssumeRoleArn
 	metaData.InstanceId = data.InstanceId
+	metaData.AgentStartCommand = data.AgentStartCommand
+
 	return metaData
 }

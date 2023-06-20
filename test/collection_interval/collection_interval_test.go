@@ -104,7 +104,7 @@ func TestCollectionInterval(t *testing.T) {
 				time.Sleep(duration)
 				log.Printf("Starting agent")
 
-				common.StartAgent(common.ConfigOutputPath, true, false)
+				common.StartAgentWithCommand(common.ConfigOutputPath, true, false, envMetaDataStrings.AgentStartCommand)
 				time.Sleep(agentRuntime)
 				log.Printf("Stopping agent")
 

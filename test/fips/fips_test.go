@@ -35,7 +35,7 @@ func TestFIPS(t *testing.T) {
 	factory := dimension.GetDimensionFactory(*env)
 
 	common.CopyFile(agentConfigLocalPath, agentConfigPath)
-	err := common.StartAgent(agentConfigPath, false, false)
+	err := common.StartAgentWithCommand(agentConfigPath, false, false, envMetaDataStrings.AgentStartCommand)
 	if err != nil {
 		log.Printf("Agent failed to start due to err=%v\n", err)
 	}

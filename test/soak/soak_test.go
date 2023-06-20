@@ -55,7 +55,7 @@ func TestSoakHigh(t *testing.T) {
 
 func runTest(t *testing.T, configPath string, tc testConfig) {
 	common.CopyFile(configPath, common.ConfigOutputPath)
-	require.NoError(t, common.StartAgent(common.ConfigOutputPath, false, false))
+	require.NoError(t, common.StartAgentWithCommand(common.ConfigOutputPath, false, false, envMetaDataStrings.AgentStartCommand))
 	require.NoError(t, startLogGen(tc.logFileCount, tc.linesPerSecond, tc.lineSizeBytes))
 	require.NoError(t, startEMFGen(tc.emfFileCount, tc.eventsPerSecond))
 	require.NoError(t, startStatsd(tc.statsdClientCount, tc.tps, tc.metricCount))

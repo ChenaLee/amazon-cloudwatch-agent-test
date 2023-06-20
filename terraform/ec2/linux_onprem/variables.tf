@@ -101,3 +101,9 @@ variable "plugin_tests" {
   type    = string
   default = ""
 }
+
+variable "agent_start" {
+  description = "default command is for ec2 with linux"
+  type    = string
+  default = ""
+}

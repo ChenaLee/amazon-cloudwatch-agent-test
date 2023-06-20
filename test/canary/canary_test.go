@@ -43,7 +43,7 @@ func TestCanary(t *testing.T) {
 	err = common.InstallAgent(installerFilePath)
 	reportMetric(t, "InstallFail", err)
 	common.CopyFile(configInputPath, common.ConfigOutputPath)
-	err = common.StartAgent(common.ConfigOutputPath, false, false)
+	err = common.StartAgentWithCommand(common.ConfigOutputPath, false, false, envMetaDataStrings.AgentStartCommand)
 	reportMetric(t, "StartFail", err)
 	actualVersion, _ := os.ReadFile(common.InstallAgentVersionPath)
 	expectedVersion, _ := getVersionFromS3(e.Bucket)
