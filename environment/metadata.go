@@ -112,7 +112,7 @@ func registerInstanceId(dataString *MetaDataStrings) {
 
 func registerAgentStartCommand(dataString *MetaDataStrings) {
 	flag.StringVar(&(dataString.AgentStartCommand), "agentStartCommand",
-		"sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c ",
+		"sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m onPremise -s -c ",
 		"Start command is different ec2 vs onprem, linux vs windows. Default set above is for EC2 with Linux")
 	log.Printf("Agent start command is registered : %s", dataString.AgentStartCommand)
 }
