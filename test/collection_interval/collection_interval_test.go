@@ -46,6 +46,7 @@ func init() {
 // The bounds are to account for jitter
 // Add a shorter force flush interval than collection interval to make sure sample count are closer to correct
 func TestCollectionInterval(t *testing.T) {
+	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
 
 	parameters := []input{
 		{
@@ -102,9 +103,9 @@ func TestCollectionInterval(t *testing.T) {
 				startTime := currentTime.Truncate(time.Minute).Add(time.Minute)
 				duration := startTime.Sub(currentTime)
 				time.Sleep(duration)
-				log.Printf("Starting agent with command %s", envMetaDataStrings.AgentStartCommand)
+				log.Printf("Starting agent with command %s", env.AgentStartCommand)
 
-				common.StartAgentWithCommand(common.ConfigOutputPath, true, false, envMetaDataStrings.AgentStartCommand)
+				common.StartAgentWithCommand(common.ConfigOutputPath, true, false, env.AgentStartCommand)
 				time.Sleep(agentRuntime)
 				log.Printf("Stopping agent")
 
