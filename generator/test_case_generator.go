@@ -24,6 +24,7 @@ type matrixRow struct {
 	BinaryName          string `json:"binaryName"`
 	Username            string `json:"username"`
 	InstallAgentCommand string `json:"installAgentCommand"`
+	AgentStartCommand   string `json:"agentStartCommand"`
 	CaCertPath          string `json:"caCertPath"`
 	ValuesPerMinute     int    `json:"values_per_minute"` // Number of metrics to be sent or number of log lines to write
 	K8sVersion          string `json:"k8s_version"`
