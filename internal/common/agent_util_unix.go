@@ -132,7 +132,7 @@ func StartAgentWithCommand(configOutputPath string, fatalOnFailure bool, ssm boo
 		Command("bash", "-c", "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m onPremise -s -c "+path+configOutputPath).
 		Output()
 
-	log.Printf("Starting agent failed with  %v", err)
+	log.Printf("Starting agent failed with  %s %s", err, out)
 
 	if err != nil && fatalOnFailure {
 		log.Fatal(fmt.Sprint(err) + string(out))
