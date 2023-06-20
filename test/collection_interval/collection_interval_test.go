@@ -48,7 +48,7 @@ func init() {
 // Add a shorter force flush interval than collection interval to make sure sample count are closer to correct
 func TestCollectionInterval(t *testing.T) {
 	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
-	log.Printf("got md %v", env)
+	log.Printf("got with command %s", env.AgentStartCommand)
 
 	parameters := []input{
 		{
