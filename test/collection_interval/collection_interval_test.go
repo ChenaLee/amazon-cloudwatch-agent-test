@@ -102,7 +102,7 @@ func TestCollectionInterval(t *testing.T) {
 				startTime := currentTime.Truncate(time.Minute).Add(time.Minute)
 				duration := startTime.Sub(currentTime)
 				time.Sleep(duration)
-				log.Printf("Starting agent")
+				log.Printf("Starting agent with command %s", envMetaDataStrings.AgentStartCommand)
 
 				common.StartAgentWithCommand(common.ConfigOutputPath, true, false, envMetaDataStrings.AgentStartCommand)
 				time.Sleep(agentRuntime)

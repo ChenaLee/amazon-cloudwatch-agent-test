@@ -125,6 +125,9 @@ func StartAgentWithCommand(configOutputPath string, fatalOnFailure bool, ssm boo
 	if ssm {
 		path = "ssm:"
 	}
+
+	log.Printf("Starting agent with command final %s", agentStartCommand+path+configOutputPath)
+
 	out, err := exec.
 		Command("bash", "-c", agentStartCommand+path+configOutputPath).
 		Output()
