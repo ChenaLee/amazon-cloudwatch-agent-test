@@ -9,7 +9,6 @@ module "basic_components" {
   source = "../../basic_components"
 
   region = var.region
-  agent_start = var.agent_start
 }
 
 #####################################################################
@@ -47,7 +46,6 @@ module "proxy_instance" {
   test_name           = var.test_name
   region              = var.region
   user                = var.user
-  agent_start         = var.agent_start
 }
 
 #####################################################################
