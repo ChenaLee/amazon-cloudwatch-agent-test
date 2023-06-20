@@ -41,6 +41,10 @@ type testConfig struct {
 	targets map[string]map[string]struct{}
 }
 
+const (
+	testTypeKeyEc2Linux = "ec2_linux"
+)
+
 // you can't have a const map in golang
 var testTypeToTestConfig = map[string][]testConfig{
 	"ec2_gpu": {
@@ -49,7 +53,7 @@ var testTypeToTestConfig = map[string][]testConfig{
 	"ec2_linux_sanity_only": {
 		{testDir: "./test/sanity"},
 	},
-	"ec2_linux": {
+	testTypeKeyEc2Linux: {
 		{testDir: "./test/ca_bundle"},
 		{testDir: "./test/cloudwatchlogs"},
 		{testDir: "./test/metrics_number_dimension"},
@@ -147,7 +151,13 @@ var testTypeToTestConfig = map[string][]testConfig{
 	},
 }
 
+func copyAllEC2LinuxTestForOnpremTesting() {
+	testTypeToTestConfig["ec2_linux_onprem"] = testTypeToTestConfig[testTypeKeyEc2Linux]
+}
+
 func main() {
+	copyAllEC2LinuxTestForOnpremTesting()
+
 	for testType, testConfigs := range testTypeToTestConfig {
 		testMatrix := genMatrix(testType, testConfigs)
 		writeTestMatrixFile(testType, testMatrix)
