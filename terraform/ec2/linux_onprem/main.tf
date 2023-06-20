@@ -9,6 +9,7 @@ module "basic_components" {
   source = "../../basic_components"
 
   region = var.region
+  agent_start = var.agent_start
 }
 
 #####################################################################
