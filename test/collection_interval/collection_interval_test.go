@@ -7,6 +7,7 @@ package collection_interval
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"testing"
 	"time"
@@ -77,16 +78,23 @@ func TestCollectionInterval(t *testing.T) {
 		t.Run(fmt.Sprintf("test description %s resource file location %s number of metrics lower bound %d and upper bound %d",
 			parameter.testDescription, parameter.dataInput, parameter.lowerBoundInclusive, parameter.upperBoundInclusive), func(t *testing.T) {
 			common.CopyFile(parameter.dataInput, common.ConfigOutputPath)
+			log.Printf("Hostname finding")
+
 			hostName, err := os.Hostname()
 			if err != nil {
+				log.Printf("Hostname was not found")
+
 				t.Fatalf("Can't get hostname")
 			}
+			log.Printf("Hostname found")
+
 			dimensions := []types.Dimension{
 				{
 					Name:  aws.String(common.Host),
 					Value: aws.String(hostName),
 				},
 			}
+
 			pass := false
 			for i := 0; i < retryCount; i++ {
 				// Start at the beginning of next minute so cw metrics sample count will only be in the next minute for minute aggregation
@@ -94,8 +102,12 @@ func TestCollectionInterval(t *testing.T) {
 				startTime := currentTime.Truncate(time.Minute).Add(time.Minute)
 				duration := startTime.Sub(currentTime)
 				time.Sleep(duration)
+				log.Printf("Starting agent")
+
 				common.StartAgent(common.ConfigOutputPath, true, false)
 				time.Sleep(agentRuntime)
+				log.Printf("Stopping agent")
+
 				common.StopAgent()
 				endTime := time.Now()
 				if awsservice.ValidateSampleCount(metricName, common.Namespace, dimensions,
