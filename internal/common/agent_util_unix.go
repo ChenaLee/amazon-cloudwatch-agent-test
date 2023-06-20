@@ -132,6 +132,8 @@ func StartAgentWithCommand(configOutputPath string, fatalOnFailure bool, ssm boo
 		Command("bash", "-c", agentStartCommand+path+configOutputPath).
 		Output()
 
+	log.Printf("Starting agent failed with  %v", err)
+
 	if err != nil && fatalOnFailure {
 		log.Fatal(fmt.Sprint(err) + string(out))
 	} else if err != nil {
