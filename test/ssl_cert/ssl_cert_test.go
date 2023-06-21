@@ -65,7 +65,7 @@ func (t *SslCertTestRunner) validateMetric(metricName string) status.TestResult 
 	dims, failed := t.DimensionFactory.GetDimensions([]dimension.Instruction{
 		{
 			Key:   common.Host,
-			Value: aws.String(hostName),
+			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 		{
 			Key:   "cpu",
