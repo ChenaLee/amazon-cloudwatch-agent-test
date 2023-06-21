@@ -181,7 +181,7 @@ resource "null_resource" "integration_test_setup" {
       "touch /.aws/credentials",
       "printf '[AmazonCloudWatchAgent]\nregion = us-west-2' > /.aws/config",
       "printf '[AmazonCloudWatchAgent]\naws_access_key_id=%s\naws_secret_access_key=%s\naws_session_token=%s' $(aws sts assume-role --role-arn arn:aws:iam::506463145083:role/CloudWatchAgentServerRoleOnPrem --role-session-name test --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text) | tee /.aws/credentials>/dev/null",
-      "printf '[credentials]\n  shared_credential_profile = \"AmazonCloudWatchAgent\"\n  shared_credential_file = "/.aws/credentials\"' | sudo tee /opt/aws/amazon-cloudwatch-agent/etc/common-config.toml>/dev/null",
+      "printf '[credentials]\n  shared_credential_profile = \"AmazonCloudWatchAgent\"\n  shared_credential_file = \"/.aws/credentials\"' | sudo tee /opt/aws/amazon-cloudwatch-agent/etc/common-config.toml>/dev/null",
       "echo turning off imds access in order to make agent think this is an onprem host",
       "aws ec2 modify-instance-metadata-options --instance-id ${aws_instance.cwagent.id} --http-endpoint disabled",
     ]
