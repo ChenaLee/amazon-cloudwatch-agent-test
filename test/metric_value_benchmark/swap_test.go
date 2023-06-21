@@ -6,12 +6,15 @@
 package metric_value_benchmark
 
 import (
+	"github.com/aws/amazon-cloudwatch-agent-test/internal/common"
 	"log"
+	"os"
 
 	"github.com/aws/amazon-cloudwatch-agent-test/test/metric"
 	"github.com/aws/amazon-cloudwatch-agent-test/test/metric/dimension"
 	"github.com/aws/amazon-cloudwatch-agent-test/test/status"
 	"github.com/aws/amazon-cloudwatch-agent-test/test/test_runner"
+	"github.com/aws/aws-sdk-go-v2/aws"
 )
 
 type SwapTestRunner struct {
@@ -55,10 +58,18 @@ func (t *SwapTestRunner) validateSwapMetric(metricName string) status.TestResult
 		Status: status.FAILED,
 	}
 
+	hostName, err := os.Hostname()
+	if err != nil {
+		log.Printf("Hostname was not found")
+
+		t.Fatalf("Can't get hostname")
+	}
+	log.Printf("Hostname found %s", hostName)
+
 	dims, failed := t.DimensionFactory.GetDimensions([]dimension.Instruction{
 		{
-			Key:   "InstanceId",
-			Value: dimension.UnknownDimensionValue(),
+			Key:   aws.String(common.Host),
+			Value: aws.String(hostName),
 		},
 	})
 

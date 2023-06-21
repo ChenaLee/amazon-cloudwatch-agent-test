@@ -5,14 +5,6 @@
   },
   "metrics": {
     "namespace": "MetricValueBenchmarkTest",
-    "append_dimensions": {
-      "InstanceId": "${aws:InstanceId}"
-    },
-    "aggregation_dimensions": [
-      [
-        "InstanceId"
-      ]
-    ],
     "metrics_collected": {
       "cpu": {
         "resources": [

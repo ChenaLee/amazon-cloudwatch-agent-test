@@ -6,6 +6,7 @@
 package metric_value_benchmark
 
 import (
+	"github.com/aws/amazon-cloudwatch-agent-test/internal/common"
 	"github.com/aws/amazon-cloudwatch-agent-test/test/metric"
 	"strings"
 	"time"
@@ -33,7 +34,7 @@ func (t *StatsdTestRunner) Validate() status.TestGroupResult {
 	metricsToFetch := t.GetMeasuredMetrics()
 	results := make([]status.TestResult, len(metricsToFetch))
 	for i, metricName := range metricsToFetch {
-		results[i] = metric.ValidateStatsdMetric(t.DimensionFactory, namespace, "InstanceId", metricName, metric.StatsdMetricValues[i], t.GetAgentRunDuration(), send_interval)
+		results[i] = metric.ValidateStatsdMetric(t.DimensionFactory, namespace, common.Host, metricName, metric.StatsdMetricValues[i], t.GetAgentRunDuration(), send_interval)
 	}
 	return status.TestGroupResult{
 		Name:        t.GetTestName(),

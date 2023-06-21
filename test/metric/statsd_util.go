@@ -6,10 +6,12 @@
 package metric
 
 import (
+	"github.com/aws/amazon-cloudwatch-agent-test/internal/common"
 	"github.com/aws/amazon-cloudwatch-agent-test/test/metric/dimension"
 	"github.com/aws/amazon-cloudwatch-agent-test/test/status"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"log"
+	"os"
 	"strings"
 	"time"
 )
@@ -38,10 +40,17 @@ func ValidateStatsdMetric(dimFactory dimension.Factory, namespace string, dimens
 		Name:   metricName,
 		Status: status.FAILED,
 	}
+
+	hostName, err := os.Hostname()
+	if err != nil {
+		log.Printf("Hostname was not found")
+	}
+	log.Printf("Hostname found %s", hostName)
+
 	instructions := []dimension.Instruction{
 		{
-			Key:   dimensionKey,
-			Value: dimension.UnknownDimensionValue(),
+			Key:   aws.String(common.Host),
+			Value: aws.String(hostName),
 		},
 		{
 			Key:   "key",

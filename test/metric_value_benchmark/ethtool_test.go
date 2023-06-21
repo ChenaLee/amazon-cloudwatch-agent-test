@@ -6,7 +6,10 @@
 package metric_value_benchmark
 
 import (
+	"github.com/aws/amazon-cloudwatch-agent-test/internal/common"
+	"log"
 	"net"
+	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatch/types"
@@ -66,12 +69,20 @@ func (m *EthtoolTestRunner) validateEthtoolMetric(metricName string) status.Test
 		failed []dimension.Instruction
 	)
 
+	hostName, err := os.Hostname()
+	if err != nil {
+		log.Printf("Hostname was not found")
+
+		m.Fatalf("Can't get hostname")
+	}
+	log.Printf("Hostname found %s", hostName)
+
 	for _, iface := range ifaces {
 		if iface.Name == "eth0" || iface.Name == "ens5" {
 			dims, failed = m.DimensionFactory.GetDimensions([]dimension.Instruction{
 				{
-					Key:   "InstanceId",
-					Value: dimension.UnknownDimensionValue(),
+					Key:   aws.String(common.Host),
+					Value: aws.String(hostName),
 				},
 				{
 					Key:   "driver",

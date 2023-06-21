@@ -7,6 +7,7 @@ package metric_value_benchmark
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -59,12 +60,21 @@ func (t *CollectDTestRunner) validateCollectDMetric(metricName string) status.Te
 		Status: status.FAILED,
 	}
 
-	instructions := []dimension.Instruction{
+	hostName, err := os.Hostname()
+	if err != nil {
+		log.Printf("Hostname was not found")
+
+		t.Fatalf("Can't get hostname")
+	}
+	log.Printf("Hostname found %s", hostName)
+
+	dimensions := []dimension.Instruction{
 		{
-			Key:   "InstanceId",
-			Value: dimension.UnknownDimensionValue(),
+			Key:   aws.String(common.Host),
+			Value: aws.String(hostName),
 		},
 	}
+
 	switch metricName {
 	case "collectd_counter_1_value":
 		instructions = append(instructions, dimension.Instruction{

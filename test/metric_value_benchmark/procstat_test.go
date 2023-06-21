@@ -6,7 +6,10 @@
 package metric_value_benchmark
 
 import (
+	"github.com/aws/amazon-cloudwatch-agent-test/internal/common"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"log"
+	"os"
 
 	"github.com/aws/amazon-cloudwatch-agent-test/test/metric"
 	"github.com/aws/amazon-cloudwatch-agent-test/test/metric/dimension"
@@ -57,6 +60,14 @@ func (m *ProcStatTestRunner) validateProcStatMetric(metricName string) status.Te
 		Status: status.FAILED,
 	}
 
+	hostName, err := os.Hostname()
+	if err != nil {
+		log.Printf("Hostname was not found")
+
+		m.Fatalf("Can't get hostname")
+	}
+	log.Printf("Hostname found %s", hostName)
+
 	dims, failed := m.DimensionFactory.GetDimensions([]dimension.Instruction{
 		{
 			Key:   "exe",
@@ -67,8 +78,8 @@ func (m *ProcStatTestRunner) validateProcStatMetric(metricName string) status.Te
 			Value: dimension.ExpectedDimensionValue{aws.String("amazon-cloudwatch-agent")},
 		},
 		{
-			Key:   "InstanceId",
-			Value: dimension.UnknownDimensionValue(),
+			Key:   aws.String(common.Host),
+			Value: aws.String(hostName),
 		},
 	})
 
