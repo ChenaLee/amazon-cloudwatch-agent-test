@@ -81,7 +81,7 @@ func (m *EthtoolTestRunner) validateEthtoolMetric(metricName string) status.Test
 		if iface.Name == "eth0" || iface.Name == "ens5" {
 			dims, failed = m.DimensionFactory.GetDimensions([]dimension.Instruction{
 				{
-					Key:   aws.String(common.Host),
+					Key:   common.Host,
 					Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 				},
 				{

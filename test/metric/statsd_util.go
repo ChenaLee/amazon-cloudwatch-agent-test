@@ -49,7 +49,7 @@ func ValidateStatsdMetric(dimFactory dimension.Factory, namespace string, dimens
 
 	instructions := []dimension.Instruction{
 		{
-			Key:   aws.String(common.Host),
+			Key:   common.Host,
 			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 		{

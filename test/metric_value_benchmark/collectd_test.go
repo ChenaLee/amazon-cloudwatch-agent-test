@@ -70,7 +70,7 @@ func (t *CollectDTestRunner) validateCollectDMetric(metricName string) status.Te
 
 	dimensions := []dimension.Instruction{
 		{
-			Key:   aws.String(common.Host),
+			Key:   common.Host,
 			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)}
 		},
 	}

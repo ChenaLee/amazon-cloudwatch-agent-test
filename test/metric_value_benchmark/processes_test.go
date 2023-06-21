@@ -65,7 +65,7 @@ func (m *ProcessesTestRunner) validateProcessesMetric(metricName string) status.
 
 	dims, failed := m.DimensionFactory.GetDimensions([]dimension.Instruction{
 		{
-			Key:   aws.String(common.Host),
+			Key:   common.Host,
 			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 	})

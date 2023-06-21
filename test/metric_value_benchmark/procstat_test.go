@@ -78,7 +78,7 @@ func (m *ProcStatTestRunner) validateProcStatMetric(metricName string) status.Te
 			Value: dimension.ExpectedDimensionValue{aws.String("amazon-cloudwatch-agent")},
 		},
 		{
-			Key:   aws.String(common.Host),
+			Key:   common.Host,
 			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 	})

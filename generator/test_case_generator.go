@@ -158,6 +158,7 @@ func copyAllEC2LinuxTestForOnpremTesting() {
 
 func main() {
 	copyAllEC2LinuxTestForOnpremTesting()
+	//remove append dimension due to instanceId failure? yeah......
 
 	for testType, testConfigs := range testTypeToTestConfig {
 		testMatrix := genMatrix(testType, testConfigs)

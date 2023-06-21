@@ -69,7 +69,7 @@ func (m *NetTestRunner) validateNetMetric(metricName string) status.TestResult {
 			Value: dimension.ExpectedDimensionValue{aws.String("docker0")},
 		},
 		{
-			Key:   aws.String(common.Host),
+			Key:   common.Host,
 			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 	})

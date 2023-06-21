@@ -78,7 +78,7 @@ func (t *NetStatTestRunner) validateNetStatMetric(metricName string) status.Test
 
 	dims, failed := t.DimensionFactory.GetDimensions([]dimension.Instruction{
 		{
-			Key:   aws.String(common.Host),
+			Key:   common.Host,
 			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 	})

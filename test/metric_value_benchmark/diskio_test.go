@@ -70,7 +70,7 @@ func (m *DiskIOTestRunner) validateDiskMetric(metricName string) status.TestResu
 			Value: dimension.ExpectedDimensionValue{aws.String("nvme0n1")},
 		},
 		{
-			Key:   aws.String(common.Host),
+			Key:   common.Host,
 			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 	})
