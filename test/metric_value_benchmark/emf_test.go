@@ -7,6 +7,8 @@ package metric_value_benchmark
 
 import (
 	_ "embed"
+	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -81,10 +83,18 @@ func (t *EMFTestRunner) validateEMFMetric(metricName string) status.TestResult {
 		Status: status.FAILED,
 	}
 
+	hostName, err := os.Hostname()
+	if err != nil {
+		log.Printf("Hostname was not found")
+
+		t.Fatalf("Can't get hostname")
+	}
+	log.Printf("Hostname found %s", hostName)
+
 	dims, failed := t.DimensionFactory.GetDimensions([]dimension.Instruction{
 		{
-			Key:   "InstanceId",
-			Value: dimension.UnknownDimensionValue(),
+			Key:   aws.String(common.Host),
+			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 		{
 			Key:   "Type",

@@ -66,7 +66,7 @@ func (m *RenameSSMTestRunner) validateMemMetric(metricName string) status.TestRe
 	dims, failed := m.DimensionFactory.GetDimensions([]dimension.Instruction{
 		{
 			Key:   aws.String(common.Host),
-			Value: aws.String(hostName),
+			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 	})
 

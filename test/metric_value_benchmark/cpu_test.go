@@ -67,7 +67,7 @@ func (t *CPUTestRunner) validateCpuMetric(metricName string) status.TestResult {
 	dims, failed := t.DimensionFactory.GetDimensions([]dimension.Instruction{
 		{
 			Key:   aws.String(common.Host),
-			Value: aws.String(hostName),
+			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 		{
 			Key:   "cpu",

@@ -79,7 +79,7 @@ func (m *ProcStatTestRunner) validateProcStatMetric(metricName string) status.Te
 		},
 		{
 			Key:   aws.String(common.Host),
-			Value: aws.String(hostName),
+			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 	})
 

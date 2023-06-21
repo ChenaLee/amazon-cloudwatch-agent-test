@@ -82,7 +82,7 @@ func (m *EthtoolTestRunner) validateEthtoolMetric(metricName string) status.Test
 			dims, failed = m.DimensionFactory.GetDimensions([]dimension.Instruction{
 				{
 					Key:   aws.String(common.Host),
-					Value: aws.String(hostName),
+					Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 				},
 				{
 					Key:   "driver",
