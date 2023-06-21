@@ -89,7 +89,7 @@ func TestCollectionInterval(t *testing.T) {
 
 				t.Fatalf("Can't get hostname")
 			}
-			log.Printf("Hostname found")
+			log.Printf("Hostname found %s", hostName)
 
 			dimensions := []types.Dimension{
 				{
