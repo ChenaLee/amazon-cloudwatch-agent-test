@@ -59,8 +59,6 @@ func (m *DiskIOTestRunner) validateDiskMetric(metricName string) status.TestResu
 	hostName, err := os.Hostname()
 	if err != nil {
 		log.Printf("Hostname was not found")
-
-		m.Fatalf("Can't get hostname")
 	}
 	log.Printf("Hostname found %s", hostName)
 

@@ -59,8 +59,6 @@ func (m *MemTestRunner) validateMemMetric(metricName string) status.TestResult {
 	hostName, err := os.Hostname()
 	if err != nil {
 		log.Printf("Hostname was not found")
-
-		m.Fatalf("Can't get hostname")
 	}
 	log.Printf("Hostname found %s", hostName)
 

@@ -59,8 +59,6 @@ func (t *CPUTestRunner) validateCpuMetric(metricName string) status.TestResult {
 	hostName, err := os.Hostname()
 	if err != nil {
 		log.Printf("Hostname was not found")
-
-		t.Fatalf("Can't get hostname")
 	}
 	log.Printf("Hostname found %s", hostName)
 

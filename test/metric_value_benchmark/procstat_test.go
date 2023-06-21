@@ -63,8 +63,6 @@ func (m *ProcStatTestRunner) validateProcStatMetric(metricName string) status.Te
 	hostName, err := os.Hostname()
 	if err != nil {
 		log.Printf("Hostname was not found")
-
-		m.Fatalf("Can't get hostname")
 	}
 	log.Printf("Hostname found %s", hostName)
 

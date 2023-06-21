@@ -6,11 +6,10 @@
 package metric_value_benchmark
 
 import (
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"log"
 	"os"
 	"time"
-
-	"github.com/aws/aws-sdk-go-v2/aws"
 
 	"github.com/aws/amazon-cloudwatch-agent-test/internal/common"
 	"github.com/aws/amazon-cloudwatch-agent-test/test/metric"
@@ -63,15 +62,13 @@ func (t *CollectDTestRunner) validateCollectDMetric(metricName string) status.Te
 	hostName, err := os.Hostname()
 	if err != nil {
 		log.Printf("Hostname was not found")
-
-		t.Fatalf("Can't get hostname")
 	}
 	log.Printf("Hostname found %s", hostName)
 
-	dimensions := []dimension.Instruction{
+	instructions := []dimension.Instruction{
 		{
 			Key:   common.Host,
-			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)}
+			Value: dimension.ExpectedDimensionValue{Value: aws.String(hostName)},
 		},
 	}
 
