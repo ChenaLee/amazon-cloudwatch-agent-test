@@ -7,8 +7,8 @@ variable "test_dir" {
 }
 
 variable "reboot_required_tests" {
-  type    = bool
-  default = false
+  type    = list
+  default = []
 }
 
 variable "private_key_content" {
