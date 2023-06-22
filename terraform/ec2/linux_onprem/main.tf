@@ -192,6 +192,7 @@ resource "null_resource" "integration_test_setup" {
       "sudo cat ~/.aws/credentials",
       "echo turning off imds access in order to make agent think this is an onprem host",
       "aws ec2 modify-instance-metadata-options --instance-id ${aws_instance.cwagent.id} --http-endpoint disabled",
+      var.agent_start
     ]
   }
 
