@@ -7,6 +7,11 @@
   },
   "metrics": {
     "namespace": "MetricValueBenchmarkTest",
+    "aggregation_dimensions": [
+      [
+        "host"
+      ]
+    ],
     "metrics_collected": {
       "disk": {
         "resources": [
