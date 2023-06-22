@@ -37,6 +37,7 @@ func init() {
 }
 
 func TestRunAsUser(t *testing.T) {
+	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
 
 	parameters := []input{
 		{dataInput: "resources/default.json", user: root},
@@ -47,7 +48,7 @@ func TestRunAsUser(t *testing.T) {
 	for _, parameter := range parameters {
 		t.Run(fmt.Sprintf("resource file location %s user %s", parameter.dataInput, parameter.user), func(t *testing.T) {
 			common.CopyFile(parameter.dataInput, configOutputPath)
-			common.StartAgentWithCommand(configOutputPath, true, false, envMetaDataStrings.AgentStartCommand)
+			common.StartAgentWithCommand(configOutputPath, true, false, env.AgentStartCommand)
 			time.Sleep(agentRuntime)
 			log.Printf("Agent has been running for : %s", agentRuntime.String())
 			// Must read the pid file while agent is running

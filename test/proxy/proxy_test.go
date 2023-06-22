@@ -25,6 +25,8 @@ var envMetaDataStrings = &(environment.MetaDataStrings{})
 
 func init() {
 	environment.RegisterEnvironmentMetaDataFlags(envMetaDataStrings)
+	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
+	common.SetAgentAttributesMetadata(env)
 }
 
 type ProxyTestRunner struct {

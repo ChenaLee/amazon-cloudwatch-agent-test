@@ -24,6 +24,8 @@ var envMetaDataStrings = &(environment.MetaDataStrings{})
 
 func init() {
 	environment.RegisterEnvironmentMetaDataFlags(envMetaDataStrings)
+	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
+	common.SetAgentAttributesMetadata(env)
 }
 
 type LVMTestRunner struct {
@@ -52,8 +54,6 @@ func (t *LVMTestRunner) validateDiskMetric(metricName string) status.TestResult 
 	hostName, err := os.Hostname()
 	if err != nil {
 		log.Printf("Hostname was not found")
-
-		t.Fatalf("Can't get hostname")
 	}
 	log.Printf("Hostname found %s", hostName)
 
