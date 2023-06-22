@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 module "linux_common" {
-  source = "../linux_common"
+  source = "../common/linux"
 
   region = var.region
   ec2_instance_type = var.ec2_instance_type
@@ -14,6 +14,20 @@ module "linux_common" {
   test_name = var.test_name
   test_dir = var.test_dir
   is_canary = var.is_canary
+}
+
+module "reboot_common" {
+  source = "../common/linux_reboot"
+
+  test_dir = var.test_dir
+  reboot_required_tests = locals.reboot_required_tests
+  private_key_content = module.linux_common.private_key_content
+  cwagent_public_ip = module.linux_common.cwagent_public_ip
+  user = var.user
+
+  depends_on = [
+      null_resource.integration_test_setup,
+  ]
 }
 
 locals {
@@ -65,40 +79,6 @@ resource "null_resource" "integration_test_setup" {
 
   depends_on = [
     module.linux_common,
-  ]
-}
-
-## reboot when only needed
-resource "null_resource" "integration_test_reboot" {
-  count = contains(local.reboot_required_tests, var.test_dir) ? 1 : 0
-
-  connection {
-    type        = "ssh"
-    user        = var.user
-    private_key = module.linux_common.private_key_content
-    host        = module.linux_common.cwagent_public_ip
-  }
-
-  # Prepare Integration Test
-  provisioner "remote-exec" {
-    inline = [
-      "echo reboot instance",
-      "sudo shutdown -r now &",
-    ]
-  }
-
-  depends_on = [
-    null_resource.integration_test_setup,
-  ]
-}
-
-resource "null_resource" "integration_test_wait" {
-  count = contains(local.reboot_required_tests, var.test_dir) ? 1 : 0
-  provisioner "local-exec" {
-    command = "echo Sleeping for 3m after initiating instance restart && sleep 180"
-  }
-  depends_on = [
-    null_resource.integration_test_reboot,
   ]
 }
 
