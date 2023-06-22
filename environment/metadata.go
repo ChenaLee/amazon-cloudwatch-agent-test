@@ -59,6 +59,7 @@ type MetaDataStrings struct {
 
 func registerComputeType(dataString *MetaDataStrings) {
 	flag.StringVar(&(dataString.ComputeType), "computeType", "", "EC2/ECS/EKS")
+	log.Printf("compute type is registered : %s", dataString.ComputeType)
 }
 func registerBucket(dataString *MetaDataStrings) {
 	flag.StringVar(&(dataString.Bucket), "bucket", "", "s3 bucket ex cloudwatch-agent-integration-bucket")
