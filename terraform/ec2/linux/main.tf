@@ -20,7 +20,7 @@ module "reboot_common" {
   source = "../common/linux_reboot"
 
   test_dir = var.test_dir
-  reboot_required_tests = locals.reboot_required_tests
+  reboot_required_tests = local.reboot_required_tests
   private_key_content = module.linux_common.private_key_content
   cwagent_public_ip = module.linux_common.cwagent_public_ip
   user = var.user
