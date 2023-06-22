@@ -176,23 +176,17 @@ resource "null_resource" "integration_test_setup" {
       "export PATH=$PATH:/snap/bin:/usr/local/go/bin",
       "echo installing agent",
       var.install_agent,
-      "echo creating credentials file to make cwa functional on the onprem server",
       "sudo mkdir -p ~/.aws",
       "sudo mkdir -p /.aws",
-      "echo Then, copying as AmazonCloudWatchAgent which is what CWA looks for by default for cwa operation",
+      "echo creating credentials file that the agent uses by default for onprem",
       "printf '\n[profile AmazonCloudWatchAgent]\nregion = us-west-2' | sudo tee -a ~/.aws/config",
       "printf '\n[AmazonCloudWatchAgent]\naws_access_key_id=%s\naws_secret_access_key=%s\naws_session_token=%s' $(aws sts assume-role --role-arn arn:aws:iam::506463145083:role/CloudWatchAgentServerRoleOnPrem --role-session-name onpremtest --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text) | sudo tee -a ~/.aws/credentials>/dev/null",
       "printf '[credentials]\n  shared_credential_profile = \"AmazonCloudWatchAgent\"\n  shared_credential_file = \"/.aws/credentials\"' | sudo tee /opt/aws/amazon-cloudwatch-agent/etc/common-config.toml>/dev/null",
-      "sudo cat ~/.aws/config",
-      "sudo cat ~/.aws/credentials",
       "echo First, copying as default profile for test operation. AWS SDK clients use this to gain access such as querying CW. If not default as name, need to specify in test code just for onprem test",
       "printf '\n[default]\nregion = us-west-2' | sudo tee -a ~/.aws/config",
       "printf '\n[default]\naws_access_key_id=%s\naws_secret_access_key=%s\naws_session_token=%s' $(aws sts assume-role --role-arn arn:aws:iam::506463145083:role/CloudWatchAgentServerRoleOnPrem --role-session-name test --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text) | sudo tee -a ~/.aws/credentials>/dev/null",
-      "sudo cat ~/.aws/config",
-      "sudo cat ~/.aws/credentials",
       "echo turning off imds access in order to make agent think this is an onprem host",
       "aws ec2 modify-instance-metadata-options --instance-id ${aws_instance.cwagent.id} --http-endpoint disabled",
-      var.agent_start
     ]
   }
 
