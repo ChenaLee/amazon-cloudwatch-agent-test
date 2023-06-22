@@ -179,13 +179,13 @@ resource "null_resource" "integration_test_setup" {
       "sudo mkdir -p ~/.aws",
       "sudo mkdir -p /.aws",
       "echo creating credentials file that the agent uses by default for onprem",
-      "printf '\n[profile AmazonCloudWatchAgent]\nregion = us-west-2' | sudo tee -a ~/.aws/config",
-      "printf '\n[AmazonCloudWatchAgent]\naws_access_key_id=%s\naws_secret_access_key=%s\naws_session_token=%s' $(aws sts assume-role --role-arn arn:aws:iam::506463145083:role/CloudWatchAgentServerRoleOnPrem --role-session-name onpremtest --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text) | sudo tee -a ~/.aws/credentials>/dev/null",
+      "printf '\n[profile AmazonCloudWatchAgent]\nregion = us-west-2' | sudo tee -a /.aws/config",
+      "printf '\n[AmazonCloudWatchAgent]\naws_access_key_id=%s\naws_secret_access_key=%s\naws_session_token=%s' $(aws sts assume-role --role-arn arn:aws:iam::506463145083:role/CloudWatchAgentServerRoleOnPrem --role-session-name onpremtest --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text) | sudo tee -a /.aws/credentials>/dev/null",
       "printf '[credentials]\n  shared_credential_profile = \"AmazonCloudWatchAgent\"\n  shared_credential_file = \"/.aws/credentials\"' | sudo tee /opt/aws/amazon-cloudwatch-agent/etc/common-config.toml>/dev/null",
-      "echo First, copying as default profile for test operation. AWS SDK clients use this to gain access such as querying CW. If not default as name, need to specify in test code just for onprem test",
+      "echo write the same credentials as default profile as well. AWS SDK clients used for testing looks for default. Without this, would have needed to specify profile name in the test code",
       "printf '\n[default]\nregion = us-west-2' | sudo tee -a ~/.aws/config",
       "printf '\n[default]\naws_access_key_id=%s\naws_secret_access_key=%s\naws_session_token=%s' $(aws sts assume-role --role-arn arn:aws:iam::506463145083:role/CloudWatchAgentServerRoleOnPrem --role-session-name test --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text) | sudo tee -a ~/.aws/credentials>/dev/null",
-      "echo turning off imds access in order to make agent think this is an onprem host",
+      "echo turning off imds access in order to make agent start with onprem mode",
       "aws ec2 modify-instance-metadata-options --instance-id ${aws_instance.cwagent.id} --http-endpoint disabled",
     ]
   }
@@ -213,8 +213,6 @@ resource "null_resource" "integration_test_run" {
       "echo run integration test",
       "cd ~/amazon-cloudwatch-agent-test",
       "echo run sanity test && go test ./test/sanity -p 1 -v",
-      "echo agent start command is ${var.agent_start}",
-      "echo go test ${var.test_dir} -p 1 -timeout 1h -computeType=EC2 -bucket=${var.s3_bucket} -plugins='${var.plugin_tests}' -cwaCommitSha=${var.cwa_github_sha} -caCertPath=${var.ca_cert_path} -proxyUrl=${module.proxy_instance.proxy_ip} -instanceId=${aws_instance.cwagent.id} -agentStartCommand='${var.agent_start}' -v",
       "go test ${var.test_dir} -p 1 -timeout 1h -computeType=EC2 -bucket=${var.s3_bucket} -plugins='${var.plugin_tests}' -cwaCommitSha=${var.cwa_github_sha} -caCertPath=${var.ca_cert_path} -proxyUrl=${module.proxy_instance.proxy_ip} -instanceId=${aws_instance.cwagent.id} -agentStartCommand='${var.agent_start}' -v",
     ]
   }
