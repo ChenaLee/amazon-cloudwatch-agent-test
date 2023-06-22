@@ -87,6 +87,8 @@ func ValidateStatsdMetric(dimFactory dimension.Factory, namespace string, dimens
 	if metricType == "counter" {
 		expectedValue *= float64(statsdMetricsCollectionInterval / sendInterval)
 	}
+	log.Printf("metric values are %v", values)
+
 	if !IsAllValuesGreaterThanOrEqualToExpectedValue(metricName, values, float64(expectedValue)) {
 		return testResult
 	}
