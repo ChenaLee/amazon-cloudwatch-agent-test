@@ -86,7 +86,7 @@ func (t *BaseTestRunner) SetupAfterAgentRun() error {
 }
 
 func (t *BaseTestRunner) GetAgentRunDuration() time.Duration {
-	return 30 * time.Second
+	return 3 * time.Minute //TODO this is to test if there's a delay and that's why query's failing.
 }
 
 func (t *BaseTestRunner) UseSSM() bool {
