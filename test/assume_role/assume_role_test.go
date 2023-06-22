@@ -6,6 +6,8 @@
 package assume_role
 
 import (
+	"github.com/aws/amazon-cloudwatch-agent-test/test/metric/dimension"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"log"
 	"testing"
 
@@ -47,8 +49,21 @@ func (t *RoleTestRunner) validateMetric(metricName string) status.TestResult {
 		Status: status.FAILED,
 	}
 
-	dims := getDimensions(envMetaDataStrings.InstanceId)
-	if len(dims) == 0 {
+	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
+	factory := dimension.GetDimensionFactory(*env)
+
+	dims, failed := factory.GetDimensions([]dimension.Instruction{
+		{
+			Key:   "host",
+			Value: dimension.UnknownDimensionValue(),
+		},
+		{
+			Key:   "cpu",
+			Value: dimension.ExpectedDimensionValue{Value: aws.String("cpu-total")},
+		},
+	})
+
+	if len(failed) > 0 {
 		return testResult
 	}
 

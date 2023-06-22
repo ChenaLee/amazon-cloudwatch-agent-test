@@ -7,6 +7,11 @@
   },
   "metrics": {
     "namespace": "LVMTest",
+    "aggregation_dimensions": [
+      [
+        "host"
+      ]
+    ],
     "metrics_collected": {
       "disk": {
         "resources": [ "/mnt/lvm" ],
