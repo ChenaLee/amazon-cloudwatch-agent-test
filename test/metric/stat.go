@@ -11,5 +11,5 @@ const (
 	SAMPLE_COUNT             Statistics = "SampleCount"
 	MINIMUM                  Statistics = "Minimum"
 	MAXUMUM                  Statistics = "Maxmimum"
-	HighResolutionStatPeriod            = 60 // TODO this is to test if query will return if it's >10.
+	HighResolutionStatPeriod            = 10 // TODO this is to test if query will return if it's >10.
 )
