@@ -51,7 +51,7 @@ func (t *StatsdTestRunner) GetAgentConfigFileName() string {
 }
 
 func (t *StatsdTestRunner) GetAgentRunDuration() time.Duration {
-	return 7 * time.Minute
+	return 3 * time.Minute
 }
 
 func (t *StatsdTestRunner) SetupAfterAgentRun() error {
