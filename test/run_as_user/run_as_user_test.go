@@ -48,7 +48,7 @@ func TestRunAsUser(t *testing.T) {
 	for _, parameter := range parameters {
 		t.Run(fmt.Sprintf("resource file location %s user %s", parameter.dataInput, parameter.user), func(t *testing.T) {
 			common.CopyFile(parameter.dataInput, configOutputPath)
-			common.StartAgentWithCommand(configOutputPath, true, false, env.AgentStartCommand)
+			common.StartAgent(configOutputPath, true, false)
 			time.Sleep(agentRuntime)
 			log.Printf("Agent has been running for : %s", agentRuntime.String())
 			// Must read the pid file while agent is running

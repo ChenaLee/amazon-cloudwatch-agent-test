@@ -97,7 +97,6 @@ var _ test_runner.ITestRunner = (*ProxyTestRunner)(nil)
 
 func TestProxy(t *testing.T) {
 	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
-	common.SetAgentAttributesMetadata(env)
 	runner := test_runner.TestRunner{TestRunner: &ProxyTestRunner{
 		test_runner.BaseTestRunner{},
 		env.ProxyUrl,

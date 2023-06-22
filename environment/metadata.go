@@ -8,11 +8,10 @@ import (
 	"log"
 	"strings"
 
-	"github.com/aws/amazon-cloudwatch-agent-test/environment/eksdeploymenttype"
-
 	"github.com/aws/amazon-cloudwatch-agent-test/environment/computetype"
 	"github.com/aws/amazon-cloudwatch-agent-test/environment/ecsdeploymenttype"
 	"github.com/aws/amazon-cloudwatch-agent-test/environment/ecslaunchtype"
+	"github.com/aws/amazon-cloudwatch-agent-test/environment/eksdeploymenttype"
 	"github.com/aws/amazon-cloudwatch-agent-test/internal/awsservice"
 )
 
@@ -34,7 +33,6 @@ type MetaData struct {
 	ProxyUrl                  string
 	AssumeRoleArn             string
 	InstanceId                string
-	AgentStartCommand         string
 }
 
 type MetaDataStrings struct {
@@ -59,7 +57,6 @@ type MetaDataStrings struct {
 
 func registerComputeType(dataString *MetaDataStrings) {
 	flag.StringVar(&(dataString.ComputeType), "computeType", "", "EC2/ECS/EKS")
-	log.Printf("compute type is registered : %s", dataString.ComputeType)
 }
 func registerBucket(dataString *MetaDataStrings) {
 	flag.StringVar(&(dataString.Bucket), "bucket", "", "s3 bucket ex cloudwatch-agent-integration-bucket")
@@ -113,8 +110,9 @@ func registerInstanceId(dataString *MetaDataStrings) {
 
 func registerAgentStartCommand(dataString *MetaDataStrings) {
 	flag.StringVar(&(dataString.AgentStartCommand), "agentStartCommand",
-		"sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m onPremise -s -c ",
+		DefaultEC2AgentStartCommand,
 		"Start command is different ec2 vs onprem, linux vs windows. Default set above is for EC2 with Linux")
+	SetAgentStartCommandAttribute(dataString.AgentStartCommand)
 	log.Printf("Agent start command is registered : %s", dataString.AgentStartCommand)
 }
 
@@ -206,7 +204,6 @@ func GetEnvironmentMetaData(data *MetaDataStrings) *MetaData {
 	metaData.ProxyUrl = data.ProxyUrl
 	metaData.AssumeRoleArn = data.AssumeRoleArn
 	metaData.InstanceId = data.InstanceId
-	metaData.AgentStartCommand = data.AgentStartCommand
 
 	return metaData
 }

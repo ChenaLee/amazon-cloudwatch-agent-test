@@ -7,6 +7,7 @@ package common
 
 import (
 	"fmt"
+	"github.com/aws/amazon-cloudwatch-agent-test/environment"
 	"log"
 	"os/exec"
 	"path/filepath"
@@ -144,7 +145,8 @@ func StartAgentWithCommand(configOutputPath string, fatalOnFailure bool, ssm boo
 }
 
 func StartAgent(configOutputPath string, fatalOnFailure bool, ssm bool) error {
-	return StartAgentWithCommand(configOutputPath, fatalOnFailure, ssm, DefaultEC2AgentStartCommand)
+	agentStartCommand := environment.GetAgentAttributeProviderInstance().AgentStartCommand
+	return StartAgentWithCommand(configOutputPath, fatalOnFailure, ssm, agentStartCommand)
 }
 
 func StopAgent() {

@@ -7,7 +7,6 @@ package metric_value_benchmark
 
 import (
 	"fmt"
-	"github.com/aws/amazon-cloudwatch-agent-test/internal/common"
 	"log"
 	"strings"
 	"testing"
@@ -123,7 +122,6 @@ func getEc2TestRunners(env *environment.MetaData) []*test_runner.TestRunner {
 
 func (suite *MetricBenchmarkTestSuite) TestAllInSuite() {
 	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
-	common.SetAgentAttributesMetadata(env)
 	switch env.ComputeType {
 	case computetype.ECS:
 		log.Println("Environment compute type is ECS")
