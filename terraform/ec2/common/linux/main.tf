@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: MIT
 
 module "common" {
-  source = "../../common"
+  source = "../../../common"
 }
 
 module "basic_components" {
-  source = "../../basic_components"
+  source = "../../../basic_components"
 
   region = var.region
 }
@@ -34,7 +34,7 @@ locals {
 
 # create a proxy instance for tests using proxy instsance
 module "proxy_instance" {
-  source              = "../proxy"
+  source              = "../../proxy"
   create              = length(regexall("proxy", var.test_dir)) > 0 ? 1 : 0
   ssh_key_name        = local.ssh_key_name
   private_key_content = local.private_key_content

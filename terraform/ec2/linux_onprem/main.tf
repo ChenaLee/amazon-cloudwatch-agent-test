@@ -106,6 +106,6 @@ resource "null_resource" "integration_test_run" {
 
   depends_on = [
     null_resource.integration_test_setup,
-    null_resource.integration_test_wait,
+    module.reboot_common,
   ]
 }
