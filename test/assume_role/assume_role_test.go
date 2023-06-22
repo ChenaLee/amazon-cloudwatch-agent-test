@@ -91,6 +91,8 @@ func (t *RoleTestRunner) SetupBeforeAgentRun() error {
 var _ test_runner.ITestRunner = (*RoleTestRunner)(nil)
 
 func TestAssumeRole(t *testing.T) {
+	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
+	common.SetAgentAttributesMetadata(env)
 	runner := test_runner.TestRunner{TestRunner: &RoleTestRunner{test_runner.BaseTestRunner{}}}
 	result := runner.Run()
 	if result.GetStatus() != status.SUCCESSFUL {

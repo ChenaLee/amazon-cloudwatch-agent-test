@@ -29,8 +29,6 @@ var envMetaDataStrings = &(environment.MetaDataStrings{})
 
 func init() {
 	environment.RegisterEnvironmentMetaDataFlags(envMetaDataStrings)
-	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
-	common.SetAgentAttributesMetadata(env)
 }
 
 type SslCertTestRunner struct {
@@ -125,6 +123,8 @@ var _ test_runner.ITestRunner = (*SslCertTestRunner)(nil)
 
 func TestSSLCert(t *testing.T) {
 	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
+	common.SetAgentAttributesMetadata(env)
+
 	factory := dimension.GetDimensionFactory(*env)
 	runner := test_runner.TestRunner{TestRunner: &SslCertTestRunner{
 		test_runner.BaseTestRunner{DimensionFactory: factory},
