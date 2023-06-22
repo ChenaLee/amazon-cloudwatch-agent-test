@@ -129,10 +129,8 @@ func StartAgentWithCommand(configOutputPath string, fatalOnFailure bool, ssm boo
 	log.Printf("Starting agent with command final %s", agentStartCommand+path+configOutputPath)
 
 	out, err := exec.
-		Command("bash", "-c", "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m onPremise -s -c "+path+configOutputPath).
+		Command("bash", "-c", agentStartCommand+path+configOutputPath).
 		Output()
-
-	log.Printf("Starting agent failed with  %s %s", err, out)
 
 	if err != nil && fatalOnFailure {
 		log.Fatal(fmt.Sprint(err) + string(out))
@@ -146,8 +144,7 @@ func StartAgentWithCommand(configOutputPath string, fatalOnFailure bool, ssm boo
 }
 
 func StartAgent(configOutputPath string, fatalOnFailure bool, ssm bool) error {
-	defaultEc2LinuxStartAgentCommand := "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c "
-	return StartAgentWithCommand(configOutputPath, fatalOnFailure, ssm, defaultEc2LinuxStartAgentCommand)
+	return StartAgentWithCommand(configOutputPath, fatalOnFailure, ssm, DefaultEC2AgentStartCommand)
 }
 
 func StopAgent() {
