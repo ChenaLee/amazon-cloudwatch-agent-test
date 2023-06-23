@@ -37,7 +37,7 @@ func init() {
 }
 
 func TestRunAsUser(t *testing.T) {
-	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
+	env := environment.GetEnvironmentMetaData()
 
 	parameters := []input{
 		{dataInput: "resources/default.json", user: root},

@@ -145,7 +145,7 @@ func StartAgentWithCommand(configOutputPath string, fatalOnFailure bool, ssm boo
 }
 
 func StartAgent(configOutputPath string, fatalOnFailure bool, ssm bool) error {
-	agentStartCommand := environment.GetAgentAttributeProviderInstance().AgentStartCommand
+	agentStartCommand := environment.GetEnvironmentMetaData().AgentStartCommand
 	return StartAgentWithCommand(configOutputPath, fatalOnFailure, ssm, agentStartCommand)
 }
 

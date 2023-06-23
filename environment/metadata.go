@@ -15,6 +15,13 @@ import (
 	"github.com/aws/amazon-cloudwatch-agent-test/internal/awsservice"
 )
 
+const (
+	DefaultEC2AgentStartCommand = "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c "
+)
+
+var metaDataStorage *MetaData = nil
+var registeredMetaDataStrings *MetaDataStrings = nil
+
 type MetaData struct {
 	ComputeType               computetype.ComputeType
 	EcsLaunchType             ecslaunchtype.ECSLaunchType
@@ -33,6 +40,7 @@ type MetaData struct {
 	ProxyUrl                  string
 	AssumeRoleArn             string
 	InstanceId                string
+	AgentStartCommand         string
 }
 
 type MetaDataStrings struct {
@@ -112,8 +120,6 @@ func registerAgentStartCommand(dataString *MetaDataStrings) {
 	flag.StringVar(&(dataString.AgentStartCommand), "agentStartCommand",
 		DefaultEC2AgentStartCommand,
 		"Start command is different ec2 vs onprem, linux vs windows. Default set above is for EC2 with Linux")
-	SetAgentStartCommandAttribute(dataString.AgentStartCommand)
-	log.Printf("Agent start command is registered : %s", dataString.AgentStartCommand)
 }
 
 func fillECSData(e *MetaData, data *MetaDataStrings) {
@@ -188,10 +194,17 @@ func RegisterEnvironmentMetaDataFlags(metaDataStrings *MetaDataStrings) *MetaDat
 	registerAssumeRoleArn(metaDataStrings)
 	registerInstanceId(metaDataStrings)
 	registerAgentStartCommand(metaDataStrings)
+
+	registeredMetaDataStrings = metaDataStrings
 	return metaDataStrings
 }
 
-func GetEnvironmentMetaData(data *MetaDataStrings) *MetaData {
+func GetEnvironmentMetaData() *MetaData {
+	if metaDataStorage != nil {
+		return metaDataStorage
+	}
+
+	data := registeredMetaDataStrings
 	metaData := &(MetaData{})
 	fillComputeType(metaData, data)
 	fillECSData(metaData, data)
@@ -204,6 +217,7 @@ func GetEnvironmentMetaData(data *MetaDataStrings) *MetaData {
 	metaData.ProxyUrl = data.ProxyUrl
 	metaData.AssumeRoleArn = data.AssumeRoleArn
 	metaData.InstanceId = data.InstanceId
+	metaData.AgentStartCommand = data.AgentStartCommand
 
 	return metaData
 }

@@ -121,7 +121,7 @@ func getEc2TestRunners(env *environment.MetaData) []*test_runner.TestRunner {
 }
 
 func (suite *MetricBenchmarkTestSuite) TestAllInSuite() {
-	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
+	env := environment.GetEnvironmentMetaData()
 	switch env.ComputeType {
 	case computetype.ECS:
 		log.Println("Environment compute type is ECS")

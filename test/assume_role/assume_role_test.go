@@ -49,7 +49,7 @@ func (t *RoleTestRunner) validateMetric(metricName string) status.TestResult {
 		Status: status.FAILED,
 	}
 
-	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
+	env := environment.GetEnvironmentMetaData()
 	factory := dimension.GetDimensionFactory(*env)
 
 	dims, failed := factory.GetDimensions([]dimension.Instruction{
@@ -106,7 +106,7 @@ func (t *RoleTestRunner) SetupBeforeAgentRun() error {
 var _ test_runner.ITestRunner = (*RoleTestRunner)(nil)
 
 func TestAssumeRole(t *testing.T) {
-	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
+	env := environment.GetEnvironmentMetaData()
 	runner := test_runner.TestRunner{TestRunner: &RoleTestRunner{test_runner.BaseTestRunner{}}}
 	result := runner.Run()
 	if result.GetStatus() != status.SUCCESSFUL {

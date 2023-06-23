@@ -47,7 +47,7 @@ func init() {
 // The bounds are to account for jitter
 // Add a shorter force flush interval than collection interval to make sure sample count are closer to correct
 func TestCollectionInterval(t *testing.T) {
-	env := environment.GetEnvironmentMetaData(envMetaDataStrings)
+	env := environment.GetEnvironmentMetaData()
 	log.Printf("got with command %s", env.AgentStartCommand)
 
 	parameters := []input{
