@@ -5,7 +5,7 @@
     "debug": true,
     "logfile": "",
     "credentials": {
-      "role_arn": "arn:aws:iam::506463145083:role/CloudWatchAgentServerRoleOnPrem"
+      "role_arn": "arn:aws:iam::624244826603:role/CloudWatchAgentServerRoleOnPrem"
     }
   },
   "metrics": {
