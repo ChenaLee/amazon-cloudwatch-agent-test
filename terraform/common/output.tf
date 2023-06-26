@@ -10,7 +10,7 @@ output "cwa_iam_role" {
 }
 
 output "cwa_onprem_assumed_iam_role_arm" {
-  value = "arn:aws:iam::506463145083:role/CloudWatchAgentServerRoleOnPrem"
+  value = "arn:aws:iam::506463145083:role/RoleNoCwAccessTrustingCwAccessRole"
 }
 
 output "cwa_iam_policy" {
