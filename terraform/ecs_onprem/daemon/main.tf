@@ -35,7 +35,7 @@ resource "aws_launch_configuration" "cluster" {
   security_groups      = [module.basic_components.security_group]
   iam_instance_profile = module.basic_components.instance_profile
 
-  user_data = "#!/bin/bash\necho ECS_CLUSTER=${aws_ecs_cluster.cluster.name} >> /etc/ecs/ecs.config\n printf '\n[profile AmazonCloudWatchAgent]\nregion = us-west-2' | sudo tee -a /.aws/config\n printf '\n[AmazonCloudWatchAgent]\naws_access_key_id=%s\naws_secret_access_key=%s\naws_session_token=%s' $(aws sts assume-role --role-arn arn:aws:iam::506463145083:role/cwa-e2e-iam-role --role-session-name onpremtest --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text) | sudo tee -a /.aws/credentials>/dev/null\n printf '[credentials]\n  shared_credential_profile = \"AmazonCloudWatchAgent\"\n  shared_credential_file = \"/.aws/credentials\"' | sudo tee /opt/aws/amazon-cloudwatch-agent/etc/common-config.toml>/dev/null\naws ec2 modify-instance-metadata-options --instance-id $(curl http://169.254.169.254/latest/meta-data/instance-id) --http-endpoint disabled"
+  user_data = "#!/bin/bash\necho ECS_CLUSTER=${aws_ecs_cluster.cluster.name} >> /etc/ecs/ecs.config"
   metadata_options {
     http_endpoint               = "enabled"
     http_tokens                 = "required"
