@@ -159,15 +159,15 @@ var testTypeToTestConfig = map[string][]testConfig{
 }
 
 func copyAllEC2LinuxTestForOnpremTesting() {
-	/* Some tests need to be fixed in order to run in both environment, so for now for PoC, run one that works.
+	// Some tests need to be fixed in order to run in both environment, so for now for PoC, run one that works.
 	testTypeToTestConfig["ec2_linux_onprem"] = testTypeToTestConfig[testTypeKeyEc2Linux]
-	*/
-	testTypeToTestConfig["ec2_linux_onprem"] = []testConfig{
+
+	/*	testTypeToTestConfig["ec2_linux_onprem"] = []testConfig{
 		{
 			testDir: "./test/lvm",
 			targets: map[string]map[string]struct{}{"os": {"al2": {}}},
 		},
-	}
+	}*/
 }
 
 func main() {
